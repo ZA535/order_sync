@@ -1,55 +1,77 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import OrderForm from './components/OrderForm';
 import OrderList from './components/OrderList';
 import DateTimeSelector from './components/DateTimeSelector';
 
 class App extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            orders: [],
-            venueStartTime: '08:00',
-            venueEndTime: '02:00',
-            currentDateTime: new Date().toISOString().slice(0, 16)
-        };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      orders: [],
+      currentTime: new Date().toISOString(),
+      venueStartTime: '08:00',
+      venueEndTime: '02:00',
+    };
+  }
 
-    componentDidMount() {
-        this.fetchOrders();
-    }
+  setCurrentTime = (currentTime) => {
+    this.setState({ currentTime });
+  };
 
-    fetchOrders = () => {
-        fetch('http://localhost:5000/api/orders')
-            .then(res => res.json())
-            .then(data => this.setState({ orders: data }));
-    }
+  setVenueStartTime = (e) => {
+    this.setState({ venueStartTime: e.target.value });
+  };
 
-    createOrder = (amount) => {
-        fetch('http://localhost:5000/api/orders', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount })
-        })
-            .then(res => res.json())
-            .then(order => {
-                this.setState({ orders: [...this.state.orders, order] });
-            });
-    }
+  setVenueEndTime = (e) => {
+    this.setState({ venueEndTime: e.target.value });
+  };
 
-    handleDateTimeChange = (currentDateTime) => {
-        this.setState({ currentDateTime });
+  createOrder = async (amount) => {
+    try {
+      const { currentTime, venueStartTime, venueEndTime } = this.state;
+      const response = await axios.post('http://localhost:5000/orders', {
+        amount,
+        currentTime,
+        venueStartTime,
+        venueEndTime,
+      });
+      this.setState((prevState) => ({
+        orders: [...prevState.orders, response.data],
+      }));
+    } catch (error) {
+      alert(error.response.data.message);
     }
+  };
 
-    render() {
-        return (
-            <div>
-                <h1>Order Sync</h1>
-                <DateTimeSelector onDateTimeChange={this.handleDateTimeChange} />
-                <OrderForm createOrder={this.createOrder} />
-                <OrderList orders={this.state.orders} />
-            </div>
-        );
-    }
+  render() {
+    const { orders, currentTime, venueStartTime, venueEndTime } = this.state;
+
+    return (
+      <div className="App">
+        <h1>Restaurant Order System</h1>
+        <DateTimeSelector currentTime={currentTime} setCurrentTime={this.setCurrentTime} />
+        <div>
+          <label>Venue Start Time:</label>
+          <input
+            type="time"
+            value={venueStartTime}
+            onChange={this.setVenueStartTime}
+          />
+        </div>
+        <div>
+          <label>Venue End Time:</label>
+          <input
+            type="time"
+            value={venueEndTime}
+            onChange={this.setVenueEndTime}
+          />
+        </div>
+        <OrderForm createOrder={this.createOrder} />
+        <OrderList orders={orders} />
+      </div>
+    );
+  }
 }
 
 export default App;

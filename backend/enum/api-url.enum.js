@@ -1,5 +1,5 @@
 const ApiUrl = Object.freeze({
-    apiOrder : '/api/orders'
+    apiOrder : '/orders'
   });
   
 module.exports = ApiUrl;
