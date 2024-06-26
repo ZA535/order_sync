@@ -1,13 +1,17 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const db = require('./dbConnection/dbConnection');
+const ApiUrl= require('./enum/api-url.enum');
+const cors = require('cors');
+
+
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors());
 
 
-// Create Order
-app.post('/api/orders', (req, res) => {
+app.post(ApiUrl.apiOrder, (req, res) => {
     const { amount } = req.body;
     const query = 'INSERT INTO orders (amount) VALUES (?)';
     db.query(query, [amount], (err, results) => {
@@ -18,8 +22,7 @@ app.post('/api/orders', (req, res) => {
     });
 });
 
-// Get Orders
-app.get('/api/orders', (req, res) => {
+app.get(ApiUrl.apiOrder, (req, res) => {
     const query = 'SELECT * FROM orders';
     db.query(query, (err, results) => {
         if (err) {
