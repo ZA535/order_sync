@@ -3,6 +3,7 @@ import axios from 'axios';
 import OrderForm from './components/OrderForm';
 import OrderList from './components/OrderList';
 import DateTimeSelector from './components/DateTimeSelector';
+import './App.css';
 
 class App extends Component {
   constructor(props) {
@@ -27,11 +28,11 @@ class App extends Component {
     this.setState({ venueEndTime: e.target.value });
   };
 
-  createOrder = async (amount) => {
+  createOrder = async (orderData) => {
     try {
       const { currentTime, venueStartTime, venueEndTime } = this.state;
       const response = await axios.post('http://localhost:5000/orders', {
-        amount,
+        ...orderData,
         currentTime,
         venueStartTime,
         venueEndTime,
@@ -46,30 +47,39 @@ class App extends Component {
 
   render() {
     const { orders, currentTime, venueStartTime, venueEndTime } = this.state;
+    console.log("Order List : ",orders)
 
     return (
+      <>      <h1>Restaurant Order System</h1>
+
       <div className="App">
-        <h1>Restaurant Order System</h1>
-        <DateTimeSelector currentTime={currentTime} setCurrentTime={this.setCurrentTime} />
-        <div>
-          <label>Venue Start Time:</label>
-          <input
-            type="time"
-            value={venueStartTime}
-            onChange={this.setVenueStartTime}
-          />
+        <div className="left-side">
+          <DateTimeSelector currentTime={currentTime} setCurrentTime={this.setCurrentTime} />
+          <div>
+            <label>Venue Start Time:</label>
+            <input
+              type="time"
+              value={venueStartTime}
+              onChange={this.setVenueStartTime}
+            />
+          </div>
+          <div>
+            <label>Venue End Time:</label>
+            <input
+              type="time"
+              value={venueEndTime}
+              onChange={this.setVenueEndTime}
+            />
+          </div>
+          <br />
+          <OrderForm createOrder={this.createOrder} />
         </div>
-        <div>
-          <label>Venue End Time:</label>
-          <input
-            type="time"
-            value={venueEndTime}
-            onChange={this.setVenueEndTime}
-          />
+        <div className="right-side">
+          <OrderList orders={orders} />
         </div>
-        <OrderForm createOrder={this.createOrder} />
-        <OrderList orders={orders} />
       </div>
+      </>
+
     );
   }
 }

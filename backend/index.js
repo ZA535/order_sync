@@ -37,7 +37,7 @@ const getOrderId = (currentTime, venueStartTime, venueEndTime, callback) => {
 };
 
 app.post(ApiUrl.apiOrder, (req, res) => {
-  const { amount, currentTime, venueStartTime, venueEndTime } = req.body;
+  const { amount, currentTime, venueStartTime, venueEndTime, customerName, customerEmail, customerPhone, notes } = req.body;
   const orderTime = new Date(currentTime);
 
   getOrderId(orderTime, venueStartTime, venueEndTime, (err, orderId) => {
@@ -46,7 +46,7 @@ app.post(ApiUrl.apiOrder, (req, res) => {
     }
 
     if (orderId) {
-      const order = { id: orderId, amount, order_time: orderTime };
+      const order = { id: orderId, amount, order_time: orderTime, customer_name: customerName, customer_email: customerEmail, customer_phone: customerPhone, notes };
       db.query("INSERT INTO orders SET ?", order, (err, result) => {
         if (err) {
           return res.status(500).send({ message: ErrorMessages.serverError });
@@ -58,6 +58,7 @@ app.post(ApiUrl.apiOrder, (req, res) => {
     }
   });
 });
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
