@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-import OrderForm from './components/OrderForm';
-import OrderList from './components/OrderList';
-import DateTimeSelector from './components/DateTimeSelector';
-import './App.css';
+import React, { Component } from "react";
+import axios from "axios";
+import OrderForm from "./components/OrderForm";
+import OrderList from "./components/OrderList";
+import DateTimeSelector from "./components/DateTimeSelector";
+import "./App.css";
 
 class App extends Component {
   constructor(props) {
@@ -11,8 +11,8 @@ class App extends Component {
     this.state = {
       orders: [],
       currentTime: new Date().toISOString(),
-      venueStartTime: '08:00',
-      venueEndTime: '02:00',
+      venueStartTime: "08:00",
+      venueEndTime: "02:00"
     };
   }
 
@@ -31,14 +31,15 @@ class App extends Component {
   createOrder = async (orderData) => {
     try {
       const { currentTime, venueStartTime, venueEndTime } = this.state;
-      const response = await axios.post('http://localhost:5000/orders', {
+      const apiUrl = process.env.REACT_APP_API_BASE_URL;
+      const response = await axios.post(`${apiUrl}/orders`, {
         ...orderData,
         currentTime,
         venueStartTime,
-        venueEndTime,
+        venueEndTime
       });
       this.setState((prevState) => ({
-        orders: [...prevState.orders, response.data],
+        orders: [...prevState.orders, response.data]
       }));
     } catch (error) {
       alert(error.response.data.message);
@@ -47,39 +48,40 @@ class App extends Component {
 
   render() {
     const { orders, currentTime, venueStartTime, venueEndTime } = this.state;
-    console.log("Order List : ",orders)
 
     return (
-      <>      <h1>Restaurant Order System</h1>
-
-      <div className="App">
-        <div className="left-side">
-          <DateTimeSelector currentTime={currentTime} setCurrentTime={this.setCurrentTime} />
-          <div>
-            <label>Venue Start Time:</label>
-            <input
-              type="time"
-              value={venueStartTime}
-              onChange={this.setVenueStartTime}
+      <>
+        <h1>Restaurant Order System</h1>
+        <div className="App">
+          <div className="left-side">
+            <DateTimeSelector
+              currentTime={currentTime}
+              setCurrentTime={this.setCurrentTime}
             />
+            <div>
+              <label>Venue Start Time:</label>
+              <input
+                type="time"
+                value={venueStartTime}
+                onChange={this.setVenueStartTime}
+              />
+            </div>
+            <div>
+              <label>Venue End Time:</label>
+              <input
+                type="time"
+                value={venueEndTime}
+                onChange={this.setVenueEndTime}
+              />
+            </div>
+            <br />
+            <OrderForm createOrder={this.createOrder} />
           </div>
-          <div>
-            <label>Venue End Time:</label>
-            <input
-              type="time"
-              value={venueEndTime}
-              onChange={this.setVenueEndTime}
-            />
+          <div className="right-side">
+            <OrderList orders={orders} />
           </div>
-          <br />
-          <OrderForm createOrder={this.createOrder} />
         </div>
-        <div className="right-side">
-          <OrderList orders={orders} />
-        </div>
-      </div>
       </>
-
     );
   }
 }
