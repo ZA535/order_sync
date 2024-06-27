@@ -51,7 +51,7 @@ class App extends Component {
 
     return (
       <>
-        <h1>Restaurant Order System</h1>
+        <h1>Restaurant Order Management System</h1>
         <div className="App">
           <div className="left-side">
             <DateTimeSelector
