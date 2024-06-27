@@ -27,10 +27,17 @@ The project is structured into two main parts:
    ```bash
    cd backend
    npm install
-
+   npm start
 ## Frontend Setup
 
 1. **Install Dependencies**:
    ```bash
    cd frontend/ordersync
    npm install
+   npm start
+
+1. **Everiment vaiable**:
+    
+   Create a .env file in the frontend/ordersync directory (where package.json and package-lock.json are located) and add the following variable:
+   ```bash
+   REACT_APP_API_BASE_URL = http://localhost:5000
