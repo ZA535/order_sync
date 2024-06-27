@@ -28,6 +28,12 @@ The project is structured into two main parts:
    cd backend
    npm install
    npm start
+2. **Configuration**:
+   ```bash
+    HOST: '',
+    USER: '',
+    PASSWORD: '',
+    DB: '',  
 ## Frontend Setup
 
 1. **Install Dependencies**:
@@ -36,7 +42,7 @@ The project is structured into two main parts:
    npm install
    npm start
 
-1. **Everiment vaiable**:
+2. **Environment Variables**:
     
    Create a .env file in the frontend/ordersync directory (where package.json and package-lock.json are located) and add the following variable:
    ```bash
