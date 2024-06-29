@@ -35,19 +35,15 @@ const getOrderId = async (currentTime, venueStartTime, venueEndTime) => {
 };
 
 app.post(ApiUrl.apiOrder, async (req, res) => {
-  const { amount, currentTime, venueStartTime, venueEndTime, customerName, customerEmail, customerPhone, notes } = req.body;
+  const { amount, currentTime, venueStartTime, venueEndTime } = req.body;
   const orderTime = new Date(currentTime);
 
   try {
     const orderId = await getOrderId(orderTime, venueStartTime, venueEndTime);
     if (orderId) {
       const order = await Order.create({
-        Amount: amount,
-        order_time: orderTime,
-        customer_name: customerName,
-        customer_email: customerEmail,
-        customer_phone: customerPhone,
-        note: notes
+        amount: amount,
+        order_time: orderTime
       });
       res.status(201).send(order);
     } else {
